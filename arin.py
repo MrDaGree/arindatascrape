@@ -41,11 +41,12 @@ for row in tablerows:
             customer_link = cells[0].find('a').get('href')
             #ensure the link found is a customer link, sometimes org links and those arent helpful in this case
             if "https://whois.arin.net/rest/customer/" in customer_link:
+                customer_link_check += 1
+                print(str(customer_link_check) + " : " + customer_link)
                 #check if user only wanted to scrape a few customers or all
                 if args.limit:
                     #check if we are at the user supplied customer check limit
                     if (customer_link_check < args.limit):
-                        customer_link_check += 1
                         #parse the customer data as an XML
                         customer_soup = BeautifulSoup(requests.get(customer_link).text, 'xml')
                         netref = customer_soup.find('netRef')

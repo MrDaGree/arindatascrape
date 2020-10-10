@@ -1,7 +1,8 @@
+import sys
+import time
+import argparse
 import requests
 from bs4 import BeautifulSoup
-import argparse
-import sys
 import xml.etree.ElementTree as ET
 
 #setup runtime terminal arguments
@@ -14,7 +15,10 @@ args = parser.parse_args()
 if not args.search:
     exit()
 
-def progres(count, total, status='', bar_len=60):
+#list of known addresses after the scrape to then output for user
+known_ip_addresses = []
+
+def progress(count, total, status='', bar_len=60):
     filled_len = int(round(bar_len * count / float(total)))
 
     percents = str(count) + " / " + str(total)
@@ -50,10 +54,10 @@ def customerScrape(link):
     netref = customer_soup.find('netRef')
     addr = netref['startAddress'] + " - " + netref['endAddress'] + " | Customer ID: " + customer_soup.find('handle').text
 
-    return addr
+    known_ip_addresses.append(addr)
 
-#list of known addresses after the scrape to then output for user
-known_ip_addresses = []
+#start time
+start_time = time.perf_counter()
 
 if "C0" in args.search:
     #append the IP address of the customer to the known IP addresses
@@ -89,15 +93,17 @@ else:
                     #check if count is less than total
                     if customer_link_check < total_customers:
                         customer_link_check += 1
-                        progres(customer_link_check, total_customers, "Customers Check")
-                        #append the IP address of the customer to the known IP addresses
-                        known_ip_addresses.append(customerScrape(customer_link))
+                        progress(customer_link_check, total_customers, "Customers Check")
+                        customerScrape(customer_link)
 
+
+search_time = time.perf_counter() - start_time
 
 print("\n\n")
 print("-" * 64)
 print("\tArin IP address scraper by MrDaGree")
 print("\nSearch Queried: " + args.search)
+print("\nSearch Time: " + str(search_time))
 print("\nKnown IP Addresses:")
 for ip in known_ip_addresses:
     print(ip)

@@ -18,6 +18,8 @@ if not args.search:
 #list of known addresses after the scrape to then output for user
 known_ip_addresses = []
 
+
+#progress bar modified from user 'MarcDirven' from https://gist.github.com/vladignatyev/06860ec2040cb497f0f3#gistcomment-3133443
 def progress(count, total, status='', bar_len=60):
     filled_len = int(round(bar_len * count / float(total)))
 
@@ -25,7 +27,7 @@ def progress(count, total, status='', bar_len=60):
     bar = '█' * filled_len + '-' * (bar_len - filled_len)
 
     fmt = '%s [%s] %s' % (status, bar, percents,)
-    print('\b' * len(fmt), end='')  # clears the line
+    print('\b' * len(fmt), end='')
     sys.stdout.write(fmt)
     sys.stdout.flush()
 
